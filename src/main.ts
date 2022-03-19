@@ -37,7 +37,11 @@ Vue.use(VueResource);
 // })
 
 // eslint-disable-next-line
-axios.interceptors.request.use((config: any) => {
+axios.interceptors.request.use(async (config: any) => {
+
+    if(config.url === '/articles'){
+        config.headers.Authorization = await auth.currentUser?.getIdToken();
+    }
     config.url = process.env.VUE_APP_ROOT_URL + config.url;
     console.log(config.data);
     return config

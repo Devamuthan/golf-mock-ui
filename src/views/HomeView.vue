@@ -12,6 +12,7 @@
 <script lang="ts">
 import Vue from 'vue';
 import {getAuth, signOut} from "firebase/auth";
+import axios from "axios";
 
 export default Vue.extend({
     name: 'HomeView',
@@ -40,12 +41,20 @@ export default Vue.extend({
         if (await auth.currentUser) {
             // If the user is logged in, then render the component
             next();
-        } else {
+       } else {
             alert('Yoy are not logged in');
             // If the user is not logged in, then redirect to login page
             next({path: '/'})
         }
-
+    },
+    mounted() {
+        axios.get('/articles')
+        .then(res=> {
+            console.log(res)
+        })
+        .catch(err => {
+            console.log(err)
+        })
     }
 });
 </script>
