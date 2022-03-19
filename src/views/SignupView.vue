@@ -38,11 +38,29 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: "SignupView",
     methods: {
         submitForm() {
-            alert( 'poda' );
+
+            const data = {
+                email: this.email,
+                phoneNumber: this.phoneNumber,
+                password: this.password,
+                firstName: this.firstName,
+                lastName: this.lastName,
+                photoURL: this.photoUrl
+            }
+            // axios.get( '/' ).then( function ( res ) {console.log( res )} ).catch( function ( error ) {console.log( error )} )
+            axios.post( '/auth/signup', data )
+                 .then( res => {
+                     console.log( res );
+                 } )
+                 .catch( err => {
+                     console.log( err );
+                 } )
         }
     },
 
@@ -53,7 +71,7 @@ export default {
             password: "",
             firstName: "",
             lastName: "",
-            photoURL: "https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_1280.png"
+                photoUrl: "https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_1280.png"
         }
     }
 }
@@ -61,7 +79,7 @@ export default {
 
 <style scoped>
 
-.container{
+.container {
     height: 100%;
     width: 100%;
     display: flex;
@@ -70,7 +88,7 @@ export default {
     flex-direction: column;
 }
 
-form{
+form {
     height: 560px;
     width: 500px;
     background: #fff;
@@ -83,13 +101,13 @@ form{
     flex-direction: column;
 }
 
-.title{
+.title {
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
-.field{
+.field {
     height: 50px;
     width: 100%;
     display: flex;
@@ -97,7 +115,7 @@ form{
     justify-content: center;
 }
 
-.field input{
+.field input {
     height: 100%;
     width: 350px;
     border-radius: 5px;
@@ -106,7 +124,7 @@ form{
     border: 1px solid lightgrey;
 }
 
-.login-button{
+.login-button {
     height: 50px;
     width: 200px;
     border-radius: 5px;
@@ -119,14 +137,14 @@ form{
     transition: 0.25s linear;
 }
 
-.login-button:hover{
+.login-button:hover {
     width: 250px;
     background: #fff;
     color: #000;
     border: 1px solid #000;
 }
 
-.link a{
+.link a {
     text-decoration: none;
     color: #6b8dce;
 }

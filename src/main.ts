@@ -4,6 +4,8 @@ import router from './router'
 import store from './store'
 import firebase from "firebase/compat/app"
 import {getAuth} from "firebase/auth";
+import VueResource from 'vue-resource';
+import axios from "axios";
 
 // Firebase config
 const firebaseConfig = {
@@ -24,9 +26,26 @@ let app: Vue;
 
 const auth = getAuth();
 
+Vue.use(VueResource);
+
+// Vue.http.interceptors.push(function (request: any, next: any) {
+//     console.log('Before adding url: ' + request.url);
+//     request.url = process.env.VUE_APP_ROOT_URL + request.url;
+//     console.log('After adding url: ' + request.url);
+//
+//     next();
+// })
+
+// eslint-disable-next-line
+axios.interceptors.request.use((config: any) => {
+    config.url = process.env.VUE_APP_ROOT_URL + config.url;
+    console.log(config.data);
+    return config
+})
+
 // Rendering the app only when the firebase auth statechange is caught or when the data is available
-auth.onAuthStateChanged(user => {
-  console.log(user);
+auth.onAuthStateChanged(() => {
+  // console.log(user);
     if(!app) {
       app = new Vue({
         router,
