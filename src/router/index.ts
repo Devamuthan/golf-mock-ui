@@ -10,12 +10,15 @@ const routes: Array<RouteConfig> = [
   {
     path: '/',
     name: 'login',
-    component: LoginView
+    component: LoginView,
+    meta: {
+      authRequired: true,
+    },
   },
   {
     path: '/sign-up',
     name: 'sign-up',
-    component: SignupView
+    component: SignupView,
   },
   {
 
@@ -23,8 +26,8 @@ const routes: Array<RouteConfig> = [
     name: 'dashboard',
     component: HomeView,
     meta: {
-      authRequired: true
-    }
+      authRequired: true,
+    },
   },
   // {
   //   path: '/about',

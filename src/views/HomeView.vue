@@ -12,36 +12,40 @@
 <script lang="ts">
 import Vue from 'vue';
 import {getAuth, signOut} from "firebase/auth";
-import firebase from "firebase/compat/app";
 
 export default Vue.extend({
     name: 'HomeView',
     methods: {
+
+        // Logout method
         logout() {
             const auth = getAuth();
+
+            // Calls the logout method from firebase/auth
             signOut(auth)
                 .then(() => {
+                    // Redirect to login or main page on successful logout
                     this.$router.push('/');
                 })
                 .catch((error) => {
+                    // print the error if any
                     alert(error.message);
                 })
         }
-    }
-});
+    },
+    async beforeRouteEnter(to, from, next) {
+        const auth = await getAuth();
 
-router.beforeEac((to, from, next) => {
-    if(to.matched.some(record => record.meta.authRequired)) {
-        if(firebase.auth().currentUser) {
+        // Login route guard to check if the user is logged in
+        if (await auth.currentUser) {
+            // If the user is logged in, then render the component
             next();
         } else {
-            alert('You must be logged in to see this page');
-            next({
-                path: '/'
-            })
+            alert('Yoy are not logged in');
+            // If the user is not logged in, then redirect to login page
+            next({path: '/'})
         }
-    } else {
-        next();
+
     }
-})
+});
 </script>

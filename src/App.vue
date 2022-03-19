@@ -30,4 +30,6 @@ nav a.router-link-exact-active {
 <script>
 export default {
 }
+
+
 </script>

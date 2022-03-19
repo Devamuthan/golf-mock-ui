@@ -4,12 +4,12 @@
             <div class="title">
                 Login
             </div>
-            <div class="field"  >
-<!--                <label>Enter Email</label>-->
-                <input v-model="email"  placeholder="Email id" type="text"/>
+            <div class="field">
+                <!--                <label>Enter Email</label>-->
+                <input v-model="email" placeholder="Email id" type="text"/>
             </div>
             <div class="field">
-<!--                <label>Enter Password</label>-->
+                <!--                <label>Enter Password</label>-->
                 <input v-model="password" placeholder="Password" type="password"/>
             </div>
             <button class="login-button">Login</button>
@@ -23,22 +23,26 @@
 </template>
 
 <script>
-import {getAuth, signInWithEmailAndPassword} from 'firebase/auth'
+import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
 
 export default {
     name: "LoginView",
     methods: {
         login() {
-
             const auth = getAuth();
-            signInWithEmailAndPassword(auth, this.email, this.password)
-            .then((userCredential) => {
-                console.log(userCredential);
-                this.$router.push('/dashboard');
-            })
-            .catch((error) => {
-                alert(error.message);
-            })
+
+            // Calling the signInWithEmailAndPassword method from firebase/auth to login
+            signInWithEmailAndPassword( auth, this.email, this.password )
+                // eslint-disable-next-line
+                .then( ( userCredential ) => {
+                    // console.log( userCredential );
+                    // On successful authentication, redirect to dashboard page
+                    this.$router.push( '/dashboard' );
+                } )
+                .catch( ( error ) => {
+                    // Log the errors if any
+                    alert( error.message );
+                } )
         },
     },
     data() {
@@ -47,12 +51,23 @@ export default {
             password: "",
         }
     },
+    beforeRouteEnter( to, from, next ) {
+        // Login route guard
+        const auth = getAuth();
+        if ( auth.currentUser ) {
+            // If the user is already logged in, then the user should be redirected to dashboard page
+            next( '/dashboard' );
+        } else {
+            // If the user is not already logged in, then continue to render the login component
+            next();
+        }
+    }
 }
 </script>
 
 <style scoped>
 
-.container{
+.container {
     height: 100%;
     width: 100%;
     display: flex;
@@ -60,7 +75,7 @@ export default {
     justify-content: center;
 }
 
-form{
+form {
     height: 350px;
     width: 500px;
     background: #fff;
@@ -73,13 +88,13 @@ form{
     flex-direction: column;
 }
 
-.title{
+.title {
     font-size: 30px;
     font-weight: 600;
     margin-bottom: 10px;
 }
 
-.field{
+.field {
     height: 50px;
     width: 100%;
     display: flex;
@@ -87,7 +102,7 @@ form{
     justify-content: center;
 }
 
-.field input{
+.field input {
     height: 100%;
     width: 350px;
     border-radius: 5px;
@@ -96,7 +111,7 @@ form{
     border: 1px solid lightgrey;
 }
 
-.login-button{
+.login-button {
     height: 50px;
     width: 200px;
     border-radius: 5px;
@@ -109,14 +124,14 @@ form{
     transition: 0.25s linear;
 }
 
-.login-button:hover{
+.login-button:hover {
     width: 250px;
     background: #fff;
     color: #000;
     border: 1px solid #000;
 }
 
-.link a{
+.link a {
     text-decoration: none;
     color: #6b8dce;
 }
