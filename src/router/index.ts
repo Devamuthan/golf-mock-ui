@@ -19,6 +19,9 @@ const routes: Array<RouteConfig> = [
     path: '/sign-up',
     name: 'sign-up',
     component: SignupView,
+    meta: {
+      authRequired: true
+    },
   },
   {
 
