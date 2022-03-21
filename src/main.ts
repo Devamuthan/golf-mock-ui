@@ -1,21 +1,13 @@
+import firebase from "firebase/compat/app"
+import {getAuth} from "firebase/auth";
 import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import firebase from "firebase/compat/app"
-import {getAuth} from "firebase/auth";
-import VueResource from 'vue-resource';
 import axios from "axios";
+import firebaseConfig from "@/config/firebaseConfig";
 
-// Firebase config
-const firebaseConfig = {
-    apiKey: process.env.VUE_APP_FIREBASE_API_KEY,
-    authDomain: "golf-mock.firebaseapp.com",
-    projectId: "golf-mock",
-    storageBucket: "golf-mock.appspot.com",
-    messagingSenderId: "232919910225",
-    appId: "1:232919910225:web:0f26b4c31ddeaf7db33570"
-};
+console.log(process.env.VUE_APP_FIREBASE_API_KEY)
 
 // Initialize Firebase
 firebase.initializeApp(firebaseConfig);
@@ -26,24 +18,14 @@ let app: Vue;
 
 const auth = getAuth();
 
-Vue.use(VueResource);
-
-// Vue.http.interceptors.push(function (request: any, next: any) {
-//     console.log('Before adding url: ' + request.url);
-//     request.url = process.env.VUE_APP_ROOT_URL + request.url;
-//     console.log('After adding url: ' + request.url);
-//
-//     next();
-// })
-
 // eslint-disable-next-line
 axios.interceptors.request.use(async (config: any) => {
 
+    // Adding Bearer Token to authorization header
     if(config.url === '/articles'){
-        config.headers.Authorization = await auth.currentUser?.getIdToken();
+        config.headers.Authorization = `Bearer ${await auth.currentUser?.getIdToken()}`;
     }
     config.url = process.env.VUE_APP_ROOT_URL + config.url;
-    console.log(config.data);
     return config
 })
 

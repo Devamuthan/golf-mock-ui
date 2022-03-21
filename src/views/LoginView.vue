@@ -23,26 +23,17 @@
 </template>
 
 <script>
-import { getAuth, signInWithEmailAndPassword } from 'firebase/auth'
+import { getAuth } from 'firebase/auth'
+import Auth from "@/api/auth";
 
 export default {
     name: "LoginView",
     methods: {
         login() {
-            const auth = getAuth();
-
-            // Calling the signInWithEmailAndPassword method from firebase/auth to login
-            signInWithEmailAndPassword( auth, this.email, this.password )
-                // eslint-disable-next-line
-                .then( ( userCredential ) => {
-                    // console.log( userCredential );
-                    // On successful authentication, redirect to dashboard page
-                    this.$router.push( '/dashboard' );
-                } )
-                .catch( ( error ) => {
-                    // Log the errors if any
-                    alert( error.message );
-                } )
+            // Calling the login method with a callback function that would redirect to dashboard on success
+            Auth.login(this.email, this.password, async () => {
+                await this.$router.push('/dashboard');
+            })
         },
     },
     data() {

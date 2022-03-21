@@ -38,8 +38,8 @@
 </template>
 
 <script>
-import axios from 'axios';
-import {getAuth, signInWithEmailAndPassword} from "firebase/auth";
+import {getAuth} from "firebase/auth";
+import Auth from "@/api/auth";
 
 export default {
     name: "SignupView",
@@ -52,29 +52,13 @@ export default {
                 password: this.password,
                 firstName: this.firstName,
                 lastName: this.lastName,
-                photoURL: this.photoUrl
+                photoURL: this.photoURL
             }
-            // axios.get( '/' ).then( function ( res ) {console.log( res )} ).catch( function ( error ) {console.log( error )} )
-            axios.post( '/auth/signup', data )
-                 .then( res => {
-                     if(res.status === 200) {
-                         const auth = getAuth();
-                         signInWithEmailAndPassword( auth, this.email, this.password )
-                             // eslint-disable-next-line
-                             .then( ( userCredential ) => {
-                                 // console.log( userCredential );
-                                 // On successful authentication, redirect to dashboard page
-                                 this.$router.push( '/dashboard' );
-                             } )
-                             .catch( ( error ) => {
-                                 // Log the errors if any
-                                 alert( error.message );
-                             } )
-                     }
-                 } )
-                 .catch( err => {
-                     console.log( err );
-                 } )
+
+            // Signup function is called with a callback function to redirect to dashboard on success
+            Auth.signup(data, async () => {
+                await this.$router.push( '/dashboard' );
+            })
         }
     },
 
@@ -85,7 +69,7 @@ export default {
             password: "",
             firstName: "",
             lastName: "",
-            photoUrl: "https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_1280.png"
+            photoURL: "https://cdn.pixabay.com/photo/2015/03/04/22/35/head-659652_1280.png"
         }
     },
     beforeRouteEnter( to, from, next ) {

@@ -1,37 +1,43 @@
 <template>
     <div class="home">
-        <div>
-            Home page<br>you have been logged in successfully
+        <div class="nav-bar">
+            <div>
+                Welcome Back
+            </div>
+            <div class="logout">
+                <button @click="logout">Logout</button>
+            </div>
         </div>
-        <div>
-            <button @click="logout">Logout</button>
+
+        <div class="articles">
+            <ArticleComponent v-for="article in articles" v-bind:article="article" v-bind:key="article.key" />
         </div>
     </div>
 </template>
 
 <script lang="ts">
 import Vue from 'vue';
-import {getAuth, signOut} from "firebase/auth";
-import axios from "axios";
+import {getAuth} from "firebase/auth";
+import Auth from "@/api/auth";
+import Articles from "@/api/articles";
+import ArticleComponent from "@/components/ArticleComponent.vue";
 
 export default Vue.extend({
     name: 'HomeView',
+    components: {ArticleComponent},
+    data() {
+      return {
+          articles: []
+      }
+    },
     methods: {
 
         // Logout method
         logout() {
-            const auth = getAuth();
-
-            // Calls the logout method from firebase/auth
-            signOut(auth)
-                .then(() => {
-                    // Redirect to login or main page on successful logout
-                    this.$router.push('/');
-                })
-                .catch((error) => {
-                    // print the error if any
-                    alert(error.message);
-                })
+            // Calling the logout function with a callback function to redirect to login page on success
+            Auth.logout(async () => {
+                await this.$router.push('/');
+            })
         }
     },
     async beforeRouteEnter(to, from, next) {
@@ -41,19 +47,20 @@ export default Vue.extend({
         if (await auth.currentUser) {
             // If the user is logged in, then render the component
             next();
-       } else {
+        } else {
             alert('Yoy are not logged in');
             // If the user is not logged in, then redirect to login page
             next({path: '/'})
         }
     },
     mounted() {
-        axios.get('/articles')
-        .then(res=> {
-            console.log(res)
+        Articles.getTestData()
+        .then(res => {
+            console.log(res);
+            this.articles = res.data.articles;
         })
         .catch(err => {
-            console.log(err)
+            console.log(err);
         })
     }
 });
